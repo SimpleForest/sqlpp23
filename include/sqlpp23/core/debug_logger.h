@@ -31,6 +31,8 @@
 #include <functional>
 #include <string>
 
+#include <sqlpp23/core/log_category.h>
+
 namespace sqlpp {
 #ifdef SQLPP23_DISABLE_DEBUG
 static constexpr inline bool debug_enabled = false;
@@ -38,15 +40,7 @@ static constexpr inline bool debug_enabled = false;
 static constexpr inline bool debug_enabled = true;
 #endif
 
-enum class log_category : uint8_t {
-  statement = 0x01,   // Preparation and execution of statements.
-  parameter = 0x02,   // The parameters sent with a prepared query.
-  result = 0x04,      // Result fields and rows.
-  connection = 0x08,  // Other connection interactions, e.g. opening, closing.
-  all = 0xFF,
-};
-
-using log_function_t = std::function<void(const std::string&)>;
+using log_function_t = std::function<void(log_category, const std::string&)>;
 
 class debug_logger {
   uint8_t _categories = 0;
@@ -75,7 +69,7 @@ class debug_logger {
     const auto category_bit =
         static_cast<std::underlying_type_t<log_category>>(category);
     if (_categories & category_bit) {
-      _log_function(std::format(fmt, std::forward<Args>(args)...));
+      _log_function(category, std::format(fmt, std::forward<Args>(args)...));
     }
   }
 };

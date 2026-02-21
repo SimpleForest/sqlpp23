@@ -2,8 +2,15 @@
 
 # Change log
 
-## 0.68
+## next
 
+Breaking changes:
+
+- Added log_category parameter to log function, #86
+
+Other changes:
+
+- add .as<"my_name">() overload (requires C++26 with reflection), #99
 - deprecate result_row_t::as_tuple
 - new as_tuple(const result_row_t&)
 - new get_sql_name_tuple(const result_row_t&), #72
@@ -16,6 +23,9 @@
     - date_time -> timestamp
   - documented the format of the custom types file
   - recognize and process "ALTER TABLE...ALTER COLUMN...SET DEFAULT" commands, which improves processing of pg_dump output scripts.
+  - forbid order_by, limit, offset, and for_update in union arguments (while mysql and postgresql would allow order_by, limit, and offset if the arguments and enclosed in parentheses, these clauses are not allowed in sqlite3 and parentheses aren't allowed either)
+  - add order_by, limit, and offset to union expressions, e.g. `lhs.union(rhs).order_by(t.id).limit(10).offset(10)`
+  - forbid expressions that require tables in limit and offset, e.g. `limit(t.id)`
 
 ## 0.67
 

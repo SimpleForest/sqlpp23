@@ -25,16 +25,13 @@
 set(test_files
     DynamicWhere.cpp
     Insert.cpp
-    Lower.cpp
     ParameterizedVerbatim.cpp
     TableAlias.cpp
-    Trim.cpp
-    Upper.cpp
 )
 
 create_test_sourcelist(test_sources test_serializer_main.cpp ${test_files})
 add_executable(sqlpp23_core_serialize ${test_sources})
-target_link_libraries(sqlpp23_core_serialize PRIVATE sqlpp23::sqlpp23 sqlpp23_testing sqlpp23_core_testing)
+target_link_libraries(sqlpp23_core_serialize PRIVATE sqlpp23::core sqlpp23_testing sqlpp23_core_testing)
 
 foreach(test_file IN LISTS test_files)
     get_filename_component(test ${test_file} NAME_WLE)

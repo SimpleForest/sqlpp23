@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Roland Bock
+ * Copyright (c) 2025, Roland Bock
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,22 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sqlpp23/tests/core/all.h>
+#include <sqlpp23/tests/postgresql/all.h>
 
-int main(int, char*[]) {
-  const auto val = sqlpp::value(1);
-  const auto expr = sqlpp::value(17) + 4;
-
-  // Operands are enclosed in parentheses where required.
-  SQLPP_COMPARE(val.asc(), "1 ASC");
-  SQLPP_COMPARE(val.desc(), "1 DESC");
-  SQLPP_COMPARE(val.order(sqlpp::sort_type::asc), "1 ASC");
-  SQLPP_COMPARE(val.order(sqlpp::sort_type::desc), "1 DESC");
-
-  SQLPP_COMPARE(expr.asc(), "(17 + 4) ASC");
-  SQLPP_COMPARE(expr.desc(), "(17 + 4) DESC");
-  SQLPP_COMPARE(expr.order(sqlpp::sort_type::asc), "(17 + 4) ASC");
-  SQLPP_COMPARE(expr.order(sqlpp::sort_type::desc), "(17 + 4) DESC");
+int main() {
+  SQLPP_COMPARE(true, "'t'::boolean");
+  SQLPP_COMPARE(false, "'f'::boolean");
+  SQLPP_COMPARE(17, "17");
+  SQLPP_COMPARE(0.1f, "0.1");
 
   return 0;
 }

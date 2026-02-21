@@ -1,15 +1,18 @@
+#pragma once
+
 /*
- * Copyright (c) 2023, Roland Bock
+ * Copyright (c) 2025, Roland Bock
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ *   Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -24,21 +27,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sqlpp23/tests/core/all.h>
+#include <stdint.h>
 
-int Lower(int, char*[]) {
-  const auto bar = test::TabBar{};
+namespace sqlpp {
+enum class log_category : uint8_t {
+  statement = 0x01,   // Preparation and execution of statements.
+  parameter = 0x02,   // The parameters sent with a prepared query.
+  result = 0x04,      // Result fields and rows.
+  connection = 0x08,  // Other connection interactions, e.g. opening, closing.
+  all = 0xFF,
+};
 
-  // Single column.
-  SQLPP_COMPARE(lower(bar.textN), "LOWER(tab_bar.text_n)");
-
-  // Expression.
-  SQLPP_COMPARE(lower(bar.textN + "suffix"),
-                "LOWER(CONCAT(tab_bar.text_n, 'suffix'))");
-
-  // With sub select.
-  SQLPP_COMPARE(lower(select(sqlpp::value("something").as(sqlpp::alias::a))),
-                "LOWER(SELECT 'something' AS a)");
-
-  return 0;
-}
+}  // namespace sqlpp

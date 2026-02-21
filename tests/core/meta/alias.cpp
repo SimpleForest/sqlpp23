@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, Roland Bock
+ * Copyright (c) 2026 Roland Bock
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,31 @@
 #include <sqlpp23/tests/core/all.h>
 
 int main(int, char*[]) {
-  SQLPP_COMPARE(sqlpp::coalesce("a"), "COALESCE('a')");
-  SQLPP_COMPARE(sqlpp::coalesce("a", "b"), "COALESCE('a', 'b')");
-  SQLPP_COMPARE(sqlpp::coalesce("a", sqlpp::dynamic(true, "b"), "c"),
-                "COALESCE('a', 'b', 'c')");
-  SQLPP_COMPARE(sqlpp::coalesce("a", sqlpp::dynamic(false, "b"), "c"),
-                "COALESCE('a', NULL, 'c')");
+#if SQLPP_INCLUDE_REFLECTION == 1
+  const auto foo = test::TabFoo{};
+  const auto bar = test::TabBar{};
+
+  SQLPP_COMPARE(avg(bar.id + 7).as<"my_average">(),
+                "AVG(tab_bar.id + 7) AS my_average");
+
+  const auto table_a = foo.as<"table_a">();
+  const auto table_b = bar.as<"table_b">();
+
+  SQLPP_COMPARE(sqlpp::select(table_a.id.as<"id_a">(), table_a.intN,
+                              table_b.id.as<"id_b">(), table_b.textN)
+                    .from(table_a.join(table_b).on(table_a.id == table_b.id)),
+                "SELECT table_a.id AS id_a, table_a.int_n, table_b.id AS id_b, "
+                "table_b.text_n "
+                "FROM tab_foo AS table_a "
+                "INNER JOIN tab_bar AS table_b "
+                "ON table_a.id = table_b.id");
+
+  sqlpp::mock_db::connection db = sqlpp::mock_db::make_test_connection();
+  for (const auto& row :
+       db(sqlpp::select(table_a.id.as<"id_a">()).from(table_a))) {
+    std::cout << row.id_a << std::endl;
+  }
+#endif
 
   return 0;
 }

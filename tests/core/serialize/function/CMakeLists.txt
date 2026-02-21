@@ -25,15 +25,9 @@
 function(create_test name)
     set(target sqlpp23_core_serialize_function_${name})
     add_executable(${target} ${name}.cpp)
-    target_link_libraries(${target} PRIVATE sqlpp23::sqlpp23 sqlpp23_testing sqlpp23_core_testing)
+    target_link_libraries(${target} PRIVATE sqlpp23::core sqlpp23_testing sqlpp23_core_testing)
     add_test(NAME ${target} COMMAND ${target})
 endfunction()
 
-create_test(coalesce)
-create_test(concat)
-create_test(current_date)
-create_test(current_time)
-create_test(current_timestamp)
-create_test(flatten)
-create_test(get_sql_name)
+create_test(all)
 
